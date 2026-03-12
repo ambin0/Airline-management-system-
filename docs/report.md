@@ -1,57 +1,67 @@
 # Airline Management System – Project Report
 
 ## 1. Introduction
-The Airline Management System is a Python-based software project designed to manage airline-related data including clients, airlines, and flights. The goal of the system is to provide a structured way to store, retrieve, and manage information using modular programming and version control through GitHub.
 
-This project is developed collaboratively by a team, with each member responsible for a different component of the system such as the graphical user interface, data storage, core program logic, testing, and documentation.
+The purpose of this project is to develop a basic Airline Management System using Python. The system is intended to manage records related to clients, airlines, and flights in a structured and organised way. By separating the system into different modules and components, the program can be developed collaboratively while maintaining clear responsibilities for each team member.
+
+The project also aims to demonstrate the use of version control through GitHub. Each member of the team works on a separate branch which allows development to take place simultaneously without interfering with the work of others. This approach reflects common practices used in professional software development environments.
 
 ## 2. Project Objectives
-The main objectives of this project are:
 
-- To design a structured Python program using multiple modules
-- To implement CRUD (Create, Read, Update, Delete) functionality for system records
-- To store and retrieve data using JSON files
-- To develop a simple graphical user interface
-- To collaborate using GitHub branches and version control
+The main objective of the project is to design and implement a simple management system capable of storing and managing airline-related information. The system should allow records to be created, viewed, updated, and removed where necessary.
+
+More specifically, the project aims to:
+
+- Implement CRUD (Create, Read, Update, Delete) operations for system records.
+- Store and retrieve data using JSON files.
+- Organise the code using a modular structure.
+- Provide a basic graphical interface to interact with the system.
+- Use GitHub to manage collaboration and version control.
+
+These objectives ensure that the system demonstrates both programming concepts and collaborative development practices.
 
 ## 3. System Overview
-The system manages three main types of records:
 
-### Clients
-Client records store information about customers who may book flights. This can include details such as the client name, ID, and contact information.
+The Airline Management System focuses on managing three main types of records: clients, airlines, and flights.
 
-### Airlines
-Airline records contain information about different airline companies operating flights.
+Client records contain information relating to individuals who may use the airline service. This may include identifiers or other basic details required to manage bookings or interactions with the system.
 
-### Flights
-Flight records include information such as flight number, airline, departure location, destination, and time.
+Airline records store information about different airline companies. This allows the system to associate flights with specific airlines and maintain structured data about available services.
 
-These records are stored using JSON files to allow easy saving and loading of data.
+Flight records contain information such as the flight number, airline, departure location, destination, and other relevant details. These records represent the core operational information managed by the system.
 
-## 4. System Architecture
-The system is structured into multiple folders and modules to keep the code organized.
+All records are stored using JSON files. This format was chosen because it is lightweight, easy to read, and well supported within Python. It allows data to be stored persistently while remaining simple to manage within the project.
 
-- `modules/` contains the main logic for clients, airlines, and flights
-- `data/` stores JSON files used to save system data
-- `gui/` contains the graphical user interface
-- `tests/` contains unit tests for validating program functionality
-- `docs/` contains documentation and the project report
+## 4. System Structure
 
-This modular structure allows different team members to work on separate components of the system simultaneously.
+To maintain organisation and clarity within the codebase, the project is divided into several directories, each serving a specific purpose.
+
+The `modules` directory contains the core logic for managing clients, airlines, flights, and data storage. Separating this logic into individual modules makes the program easier to maintain and extend.
+
+The `data` directory contains JSON files used to store system data. These files allow the program to load and save records as needed.
+
+The `gui` directory contains the user interface components that allow users to interact with the system in a more accessible way.
+
+The `tests` directory contains unit tests which are intended to verify that individual parts of the program behave as expected.
+
+Finally, the `docs` directory contains documentation related to the project, including this report and any meeting notes produced during development.
+
+This structure allows the project to remain organised while different team members work on separate areas of the system.
 
 ## 5. Development Workflow
-The team uses GitHub to manage the project and collaborate effectively. Each member works on a separate Git branch based on their assigned role. This prevents conflicts and allows work to be developed independently.
 
-Branches used in the project include:
+The project is managed using GitHub as the primary version control platform. A branching strategy is used in order to separate different areas of development.
 
-- `gui` – User interface development
-- `crud` – Core data management functions
-- `storage` – JSON data handling
-- `flight_logic` – Flight validation and system logic
-- `testing` – Unit testing
-- `documentation` – Project documentation and reporting
+Each team member is assigned a branch corresponding to their role within the project. For example, branches are used for the graphical interface, CRUD functionality, data storage, flight logic, testing, and documentation.
 
-Changes are merged into the main branch once they are completed and reviewed.
+By working on separate branches, team members can develop their components independently. Changes can later be reviewed and merged into the main branch once they are stable and complete.
+
+This workflow reduces the likelihood of conflicts while also encouraging a more organised development process.
 
 ## 6. Conclusion
-The Airline Management System project demonstrates the use of modular programming, version control, and collaborative development practices. By separating the system into different components and using GitHub branches, the team can work efficiently while maintaining an organized codebase.
+
+The Airline Management System project demonstrates the process of designing and implementing a structured software system using Python. By dividing the project into multiple components and assigning clear roles to each team member, the development process becomes more manageable and collaborative.
+
+The use of GitHub for version control allows the team to coordinate development while maintaining a clear record of changes. In addition, the modular design of the system helps ensure that different parts of the program can be developed, tested, and maintained independently.
+
+Overall, the project provides practical experience in both programming and collaborative software development.
