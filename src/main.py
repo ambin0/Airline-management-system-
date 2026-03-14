@@ -315,25 +315,23 @@ class RecordManagementApp:
         flights = get_all_flights(self.records)
         self._display_result(flights)
 
-    def _display_result(self, result) -> None:
-        self.output_text.delete("1.0", tk.END)
+def _display_result(self, result) -> None:
+    self.output_text.delete("1.0", tk.END)
 
-        if result is None:
-            self.output_text.insert(tk.END, "No matching record found.")
-            return
+    if result is None:
+        self.output_text.insert(tk.END, "No matching record found.")
+        return
 
-        if result == []:
-            self.output_text.insert(tk.END, "No matching records found.")
-            return
+    if result == []:
+        self.output_text.insert(tk.END, "No matching records found.")
+        return
 
-        if isinstance(result, list):
-            for item in result:
-                self.output_text.insert(tk.END, f"{item}
+    if isinstance(result, list):
+        for item in result:
+            self.output_text.insert(tk.END, f"{item}\n\n")
+        return
 
-")
-            return
-
-        self.output_text.insert(tk.END, f"{result}")
+    self.output_text.insert(tk.END, f"{result}")
 
 
 def main() -> None:
