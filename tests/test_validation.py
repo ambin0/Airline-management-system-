@@ -1,4 +1,12 @@
+"""
+Tests for the shared validation helpers used by flight logic.
+"""
+
+from pathlib import Path
+import sys
 import unittest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from record.validation import (
     airline_exists,
@@ -60,6 +68,7 @@ class TestValidation(unittest.TestCase):
         result = normalise_flight_record(flight, self.records)
         self.assertEqual(result["Type"], "flight")
         self.assertEqual(result["Client_ID"], 1)
+        self.assertEqual(result["Airline_ID"], 10)
 
     def test_normalise_flight_record_invalid_client(self):
         flight = {
