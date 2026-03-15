@@ -5,14 +5,6 @@ from typing import Any
 
 
 DATE_FORMAT = "%Y-%m-%d %H:%M"
-VALID_RECORD_TYPES = {"client", "airline", "flight"}
-
-
-def validate_record_type(record_type: str) -> str:
-    """Validate that the record type is one of the allowed values."""
-    if record_type not in VALID_RECORD_TYPES:
-        raise ValueError("Type must be one of: client, airline, flight.")
-    return record_type
 
 
 def require_field(record: dict[str, Any], field_name: str) -> Any:
@@ -41,7 +33,7 @@ def require_int(record: dict[str, Any], field_name: str) -> int:
 
 
 def validate_date_string(date_str: str) -> str:
-    """Validate the date string against the agreed format."""
+    """Validate the agreed flight date format."""
     try:
         datetime.strptime(date_str, DATE_FORMAT)
     except ValueError as exc:
@@ -50,7 +42,7 @@ def validate_date_string(date_str: str) -> str:
 
 
 def client_exists(records: list[dict[str, Any]], client_id: int) -> bool:
-    """Check whether a client record exists by ID."""
+    """Check whether a client exists by ID."""
     return any(
         record.get("Type") == "client" and record.get("ID") == client_id
         for record in records
@@ -58,53 +50,25 @@ def client_exists(records: list[dict[str, Any]], client_id: int) -> bool:
 
 
 def airline_exists(records: list[dict[str, Any]], airline_id: int) -> bool:
-    """Check whether an airline record exists by ID."""
+    """Check whether an airline exists by ID."""
     return any(
         record.get("Type") == "airline" and record.get("ID") == airline_id
         for record in records
     )
 
 
-def normalise_client_record(record: dict[str, Any]) -> dict[str, Any]:
-    """Validate and normalise a client record."""
-    normalised = {
-        "ID": require_int(record, "ID"),
-        "Type": "client",
-        "Name": require_non_empty_string(record, "Name"),
-        "Address Line 1": str(record.get("Address Line 1", "")).strip(),
-        "Address Line 2": str(record.get("Address Line 2", "")).strip(),
-        "Address Line 3": str(record.get("Address Line 3", "")).strip(),
-        "City": require_non_empty_string(record, "City"),
-        "State": require_non_empty_string(record, "State"),
-        "Zip Code": require_non_empty_string(record, "Zip Code"),
-        "Country": require_non_empty_string(record, "Country"),
-        "Phone Number": require_non_empty_string(record, "Phone Number"),
-    }
-    return normalised
-
-
-def normalise_airline_record(record: dict[str, Any]) -> dict[str, Any]:
-    """Validate and normalise an airline record."""
-    normalised = {
-        "ID": require_int(record, "ID"),
-        "Type": "airline",
-        "Company Name": require_non_empty_string(record, "Company Name"),
-    }
-    return normalised
-
-
 def normalise_flight_record(
-    record: dict[str, Any],
+    flight_data: dict[str, Any],
     records: list[dict[str, Any]],
 ) -> dict[str, Any]:
     """Validate and normalise a flight record."""
-    client_id = require_int(record, "Client_ID")
-    airline_id = require_int(record, "Airline_ID")
-    date_str = require_non_empty_string(record, "Date")
-    start_city = require_non_empty_string(record, "Start City")
-    end_city = require_non_empty_string(record, "End City")
+    client_id = require_int(flight_data, "Client_ID")
+    airline_id = require_int(flight_data, "Airline_ID")
+    date_value = require_non_empty_string(flight_data, "Date")
+    start_city = require_non_empty_string(flight_data, "Start City")
+    end_city = require_non_empty_string(flight_data, "End City")
 
-    validate_date_string(date_str)
+    validate_date_string(date_value)
 
     if not client_exists(records, client_id):
         raise ValueError("Client_ID does not exist.")
@@ -112,22 +76,18 @@ def normalise_flight_record(
     if not airline_exists(records, airline_id):
         raise ValueError("Airline_ID does not exist.")
 
-    normalised = {
+    return {
         "Type": "flight",
         "Client_ID": client_id,
         "Airline_ID": airline_id,
-        "Date": date_str,
+        "Date": date_value,
         "Start City": start_city,
         "End City": end_city,
     }
-    return normalised
 
 
 def same_flight(record_a: dict[str, Any], record_b: dict[str, Any]) -> bool:
-    """
-    Compare flights using the team's agreed composite identity:
-    Client_ID + Airline_ID + Date + Start City + End City
-    """
+    """Compare flights using the agreed composite identity."""
     return (
         record_a.get("Client_ID") == record_b.get("Client_ID")
         and record_a.get("Airline_ID") == record_b.get("Airline_ID")
@@ -138,7 +98,7 @@ def same_flight(record_a: dict[str, Any], record_b: dict[str, Any]) -> bool:
 
 
 def flight_exists(records: list[dict[str, Any]], flight_record: dict[str, Any]) -> bool:
-    """Check whether a matching flight already exists."""
+    """Check whether an identical flight already exists."""
     return any(
         record.get("Type") == "flight" and same_flight(record, flight_record)
         for record in records
