@@ -13,11 +13,11 @@ from typing import Any
 
 from .crud_helpers import (
     delete_record_at_index,
-    ensure_required_fields,
     find_records_by_criteria,
     matches_criteria,
     update_record_fields,
 )
+from .validation import flight_exists, normalise_flight_record
 
 FLIGHT_TYPE = "flight"
 
@@ -35,23 +35,9 @@ def build_flight_key(flight_data: dict[str, Any]) -> dict[str, Any]:
 
 def create_flight(records: list[dict[str, Any]], flight_data: dict[str, Any]) -> dict[str, Any]:
     """Creates a new flight record."""
-    ensure_required_fields(
-        flight_data,
-        ["Client_ID", "Airline_ID", "Date", "Start City", "End City"],
-    )
+    flight_record = normalise_flight_record(flight_data, records)
 
-    flight_record = {
-        "Type": FLIGHT_TYPE,
-        "Client_ID": int(flight_data["Client_ID"]),
-        "Airline_ID": int(flight_data["Airline_ID"]),
-        "Date": flight_data.get("Date", ""),
-        "Start City": flight_data.get("Start City", ""),
-        "End City": flight_data.get("End City", ""),
-    }
-
-    # Make sure we don't add the *exact* same flight twice.
-    existing = find_records_by_criteria(records, FLIGHT_TYPE, build_flight_key(flight_record))
-    if existing:
+    if flight_exists(records, flight_record):
         raise ValueError("An identical flight record already exists.")
 
     records.append(flight_record)
@@ -68,7 +54,15 @@ def search_flights(
     criteria: dict[str, Any],
 ) -> list[dict[str, Any]]:
     """Finds flights that match whatever criteria you give it."""
-    return find_records_by_criteria(records, FLIGHT_TYPE, criteria)
+    normalised_criteria = {}
+
+    for key, value in criteria.items():
+        if key in {"Client_ID", "Airline_ID"} and value not in ("", None):
+            normalised_criteria[key] = int(value)
+        else:
+            normalised_criteria[key] = value
+
+    return find_records_by_criteria(records, FLIGHT_TYPE, normalised_criteria)
 
 
 def _find_unique_flight_index(
@@ -92,7 +86,6 @@ def _find_unique_flight_index(
         return -1
 
     if len(matched_indexes) > 1:
-        # Safety first!
         raise ValueError("More than one flight matches the criteria. Please use more specific details.")
 
     return matched_indexes[0]
@@ -108,8 +101,27 @@ def update_flight(
     if index == -1:
         return None
 
-    # Don't let anyone change the record Type!
-    return update_record_fields(records[index], updates, blocked_fields=["Type"])
+    existing_record = records[index]
+
+    candidate = {
+        "Client_ID": existing_record["Client_ID"],
+        "Airline_ID": existing_record["Airline_ID"],
+        "Date": updates.get("Date", existing_record["Date"]),
+        "Start City": updates.get("Start City", existing_record["Start City"]),
+        "End City": updates.get("End City", existing_record["End City"]),
+    }
+
+    validated_candidate = normalise_flight_record(candidate, records)
+
+    for i, record in enumerate(records):
+        if i == index:
+            continue
+        if record.get("Type") != FLIGHT_TYPE:
+            continue
+        if build_flight_key(record) == build_flight_key(validated_candidate):
+            raise ValueError("The updated flight would duplicate an existing flight.")
+
+    return update_record_fields(records[index], validated_candidate, blocked_fields=["Type"])
 
 
 def delete_flight(
