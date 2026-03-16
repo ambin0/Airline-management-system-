@@ -32,6 +32,46 @@ Flight records contain information such as the flight number, airline, departure
 
 All records are stored using JSON files. This format was chosen because it is lightweight, easy to read, and well supported within Python. It allows data to be stored persistently while remaining simple to manage within the project.
 
+## System Architecture
+
+```
+
+                 +----------------------+
+                 |        GUI           |
+                 |  User Interface     |
+                 | (src/gui)           |
+                 +----------+-----------+
+                            |
+                            v
+                 +----------------------+
+                 |      CRUD Layer      |
+                 | Create / Read /      |
+                 | Update / Delete      |
+                 | (record operations)  |
+                 +----------+-----------+
+                            |
+                            v
+                 +----------------------+
+                 |    Validation Layer  |
+                 | Data integrity       |
+                 | Format checks        |
+                 | Duplicate prevention |
+                 +----------+-----------+
+                            |
+                            v
+                 +----------------------+
+                 |     Storage Layer    |
+                 | Load & Save Records  |
+                 | JSONL File Handling  |
+                 +----------+-----------+
+                            |
+                            v
+                 +----------------------+
+                 |     Data Storage     |
+                 |     record.jsonl     |
+                 | Persistent Records   |
+                 +----------------------+
+```
 ## 4. System Structure
 
 To maintain organisation and clarity within the codebase, the project is divided into several directories, each serving a specific purpose.
