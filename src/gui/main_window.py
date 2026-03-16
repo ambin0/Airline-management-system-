@@ -26,15 +26,15 @@ class RecordManagementApp(ClientFormMixin, AirlineFormMixin, FlightFormMixin):
         self.root,
         text="Simply A Tourism",
         font=("Arial", 18, "bold")
-    )
-    title_label.pack(pady=(10, 0))
+        )
+        title_label.pack(pady=(10, 0))
 
-    subtitle_label = ttk.Label(
-        self.root,
-        text="Record Management System",
-        font=("Arial", 11)
-    )
-    subtitle_label.pack(pady=(0, 10))
+        subtitle_label = ttk.Label(
+            self.root,
+            text="Record Management System",
+            font=("Arial", 11)
+        )
+        subtitle_label.pack(pady=(0, 10))
         top_frame = ttk.Frame(self.root, padding=10)
         top_frame.pack(fill="x")
 
