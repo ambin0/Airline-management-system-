@@ -1,4 +1,4 @@
-# My Plan for Storage & Integration (Member 3)
+# My Plan for Storage & Integration (Member 3: Abdel Fattah Hasan)
 
 ## Goal
 My main job is to get the file saving and loading working properly. I need to make sure that when the app starts, it loads any existing records, and when it closes, it saves everything back to the file. I also need to make sure my code doesn't crash the app if the file is missing or has junk in it.
