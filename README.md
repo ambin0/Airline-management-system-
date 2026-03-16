@@ -32,11 +32,11 @@ tests/
 ### Our Team
 
 * **Member 1:** GUI / UX
-* **Member 2: Abdel Fattah Hasan:** CRUD logic
-* **Member 3:** Storage and integration
+* **Member 2: Abdel Fattah Hasan: CRUD logic
+* **Member 3:Abdel Fattah Hasan: Storage and integration
 * **Member 4:** Brentin Govender_Validation / flight logic support
 * **Member 5:** Testing
-* **Member 6:** Amber Harris Project management and documentation
+* **Member 6: Amber Harris Project management and documentation
 
 ### My Contribution (Abdel Fattah Hasan)
 
