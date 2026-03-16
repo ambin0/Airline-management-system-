@@ -11,7 +11,7 @@ class RecordManagementApp(ClientFormMixin, AirlineFormMixin, FlightFormMixin):
         self.root = root
         self.records = records
 
-        self.root.title("Record Management System")
+        self.root.title("Simply A Tourism - Record Management System")
         self.root.geometry("1000x700")
 
         self.record_type_var = tk.StringVar(value="client")
@@ -22,6 +22,19 @@ class RecordManagementApp(ClientFormMixin, AirlineFormMixin, FlightFormMixin):
         self.refresh_form_fields()
 
     def build_layout(self) -> None:
+        title_label = ttk.Label(
+        self.root,
+        text="Simply A Tourism",
+        font=("Arial", 18, "bold")
+    )
+    title_label.pack(pady=(10, 0))
+
+    subtitle_label = ttk.Label(
+        self.root,
+        text="Record Management System",
+        font=("Arial", 11)
+    )
+    subtitle_label.pack(pady=(0, 10))
         top_frame = ttk.Frame(self.root, padding=10)
         top_frame.pack(fill="x")
 
