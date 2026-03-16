@@ -38,8 +38,8 @@ All records are stored using JSON files. This format was chosen because it is li
 
                  +----------------------+
                  |        GUI           |
-                 |  User Interface     |
-                 | (src/gui)           |
+                 |  User Interface      |
+                 | (src/gui)            |
                  +----------+-----------+
                             |
                             v
