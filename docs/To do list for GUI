@@ -1,0 +1,46 @@
+GUI Interface Improvement To-Do Checklist
+This checklist is based on the current live GUI suggested to be used by Member 1 to refine the interface.
+High priority
+[ ] Replace the current `Record Type + Action` workflow with a clearer task structure.
+[ ] Change the `Execute` button to a context-specific label such as `Create Client`, `Search Client`, `Update Flight`, or `Delete Airline`.
+[ ] Hide or disable controls that do not match the current context.
+[ ] Rename `Input Form` dynamically so it matches the selected task.
+[ ] Improve the `Results` area so it presents output clearly.
+[ ] Add clear success and error feedback after each action.
+[ ] Add stronger input validation for required fields, IDs, phone numbers, ZIP code, and dates.
+Medium priority
+[ ] Group fields into logical sections such as identity, address, and contact details.
+[ ] Mark required and optional fields clearly.
+[ ] Improve spacing, alignment, and consistency across all forms.
+[ ] Add inline guidance for fields with strict formats.
+[ ] Allow easier record selection for update and delete tasks.
+[ ] Show search results in a structured table or list where possible.
+[ ] Add a status line for useful context such as last action or record count.
+Accessibility improvements
+[ ] Increase contrast between the background, labels, inputs, and buttons.
+[ ] Ensure keyboard focus is visible.
+[ ] Improve keyboard navigation order.
+[ ] Make controls large enough for comfortable interaction.
+[ ] Keep field labels clear and persistent.
+[ ] Make error messages specific and easy to understand.
+Usability improvements
+[ ] Reduce the number of decisions required at the start of the workflow.
+[ ] Support recognition over recall by helping users browse or select records.
+[ ] Make the most common actions more obvious.
+[ ] Improve visual hierarchy so the next step is easy to understand.
+[ ] Apply a cleaner and more consistent visual style.
+Suggested implementation order
+Improve the main workflow and task structure.
+Replace `Execute` with task-specific action labels.
+Make controls context-sensitive.
+Improve validation and feedback.
+Redesign the results area.
+Improve accessibility and keyboard support.
+Refine layout, grouping, and visual consistency.
+References
+Hartson, R. and Pyla, P. (2019a) The UX Book: Agile UX Design for a Quality User Experience. 2nd edn. Cambridge, MA: Morgan Kaufmann, pp. 3–25.
+Hartson, R. and Pyla, P. (2019b) The UX Book: Agile UX Design for a Quality User Experience. 2nd edn. Cambridge, MA: Morgan Kaufmann, pp. 359–383.
+Krug, S. (2014) Don’t Make Me Think, Revisited: A Common Sense Approach to Web Usability. 3rd edn. Berkeley, CA: New Riders.
+Morville, P. and Rosenfeld, L. (2006) Information Architecture for the World Wide Web. 3rd edn. Sebastopol, CA: O’Reilly Media.
+Norman, D. (2013) The Design of Everyday Things: Revised and Expanded Edition. New York, NY: Basic Books.
+W3C (2024) Web Content Accessibility Guidelines (WCAG) 2.2.
