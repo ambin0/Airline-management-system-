@@ -126,17 +126,17 @@ class RecordManagementApp(ClientFormMixin, AirlineFormMixin, FlightFormMixin):
             entry.grid(row=row, column=1, padx=5, pady=5, sticky="w")
             self.entries[field] = entry
 
+            if self.record_type_var.get() == "flight":
+                label_text = field
+            if field in required_fields.get(self.record_type_var.get(), set()):
+                label_text = f"{field} *"
+            
         # Fields that should show a * because they are required
         required_fields = {
         "client": {"ID", "Name", "Phone Number"},
         "airline": {"ID", "Airline Name"},
         "flight": {"Client_ID", "Airline_ID", "Date", "Start City", "End City"},
             }
-        
-        if self.record_type_var.get() == "flight":
-            label_text = field
-        if field in required_fields.get(self.record_type_var.get(), set()):
-            label_text = f"{field} *"
         
         ttk.Label(self.form_frame, text=f"{label_text}:").grid(
             row=row, column=0, padx=5, pady=5, sticky="w"
