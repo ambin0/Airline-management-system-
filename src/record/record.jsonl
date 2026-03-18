@@ -1,8 +1,6 @@
-cat > src/record/record.jsonl <<'JSONL'
 {"ID": 1, "Type": "client", "Name": "John Smith", "Address Line 1": "12 Main Street", "Address Line 2": "", "Address Line 3": "", "City": "London", "State": "Greater London", "Zip Code": "SW1A 1AA", "Country": "United Kingdom", "Phone Number": "07123456789"}
 {"ID": 2, "Type": "client", "Name": "Sarah Khan", "Address Line 1": "25 King Road", "Address Line 2": "", "Address Line 3": "", "City": "Manchester", "State": "Greater Manchester", "Zip Code": "M1 2AB", "Country": "United Kingdom", "Phone Number": "07234567890"}
 {"ID": 10, "Type": "airline", "Company Name": "Emirates"}
 {"ID": 11, "Type": "airline", "Company Name": "Qatar Airways"}
 {"Type": "flight", "Client_ID": 1, "Airline_ID": 10, "Date": "2026-03-20 10:00", "Start City": "London", "End City": "Dubai"}
 {"Type": "flight", "Client_ID": 2, "Airline_ID": 11, "Date": "2026-03-21 14:30", "Start City": "Manchester", "End City": "Doha"}
-JSONL
