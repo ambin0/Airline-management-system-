@@ -1,8 +1,9 @@
 import tkinter as tk
 import re
 from tkinter import messagebox
-from tkinter import messagebox
 
+# Import the client CRUD functions from the backend
+# To create, search, update, and delete 
 from record.client_crud import (
     create_client,
     delete_client,
@@ -13,7 +14,8 @@ from record.client_crud import (
 
 
 class ClientFormMixin:
-
+    # checks whether the client data entered by the user is valid
+    # It raises an error if something important is missing or formatted badly
     def validate_client_data(self, data: dict) -> None:
         if not str(data["ID"]).isdigit():
             raise ValueError("Client ID must be a number.")
@@ -21,13 +23,15 @@ class ClientFormMixin:
             raise ValueError("Name is required.")
         if not data["Phone Number"].strip():
             raise ValueError("Phone Number is required.")
-        if not re.fullmatch(r"[0-9+\-\s()]+", data["Phone Number"]):
+        if not re.fullmatch(r"[0-9+\-\s()]+", data["Phone Number"]): # stops invalid characters
             raise ValueError("Phone Number contains invalid characters.")
         if data["Zip Code"] and len(data["Zip Code"].strip()) < 3:
             raise ValueError("ZIP Code looks too short.")
-        
+            
+    # This tells the GUI which input fields to show
+    # depending on the action selected by the user    
     def get_client_fields(self, action: str) -> list[str]:
-        if action == "create":
+        if action == "create": #show all for create
             return [
                 "ID",
                 "Name",
@@ -40,7 +44,7 @@ class ClientFormMixin:
                 "Country",
                 "Phone Number",
             ]
-        if action in {"search", "delete"}:
+        if action in {"search", "delete"}: #only shows ID or Name for search and delete
             return ["ID or Name"]
         if action == "update":
             return [
@@ -72,19 +76,19 @@ class ClientFormMixin:
                     "Country": self.entries["Country"].get(),
                     "Phone Number": self.entries["Phone Number"].get(),
                 }
-                self.validate_client_data(data)
+                self.validate_client_data(data) # validates before sending to back end
                 result = create_client(self.records, data)
                 self.display_result(result)
                 
             elif action == "search":
                 value = self.entries["ID or Name"].get().strip()
-                if value.isdigit():
+                if value.isdigit():             # If it is all digits, search by ID
                     result = get_client_by_id(self.records, int(value))
                 else:
                     result = search_clients_by_name(self.records, value)
                 self.display_result(result)
 
-            elif action == "update":
+            elif action == "update":  # UPDATE CLIENT
                 client_id = int(self.entries["ID"].get())
                 updates = {
                     "ID": client_id,
@@ -99,6 +103,11 @@ class ClientFormMixin:
                     "Phone Number": self.entries["Phone Number"].get(),
                 }
                 self.validate_client_data(updates)
+
+                # Send the updated values to the backend
+                # We do not send the ID as part of the changes dictionary,
+                # because the ID is used to find which record to update
+                
                 result = update_client(
                     self.records,
                     client_id,
@@ -116,16 +125,16 @@ class ClientFormMixin:
                 )
                 self.display_result(result)
                 
-            elif action == "delete":
+            elif action == "delete":  # DELETE CLIENT
                 value = self.entries["ID or Name"].get().strip()
-                if not value.isdigit():
+                if not value.isdigit():     # Delete only works by numeric ID
                     raise ValueError("Delete for client requires numeric ID.")
                 result = delete_client(self.records, int(value))
                 self.display_result({"deleted": result})
 
         except ValueError as exc:
             messagebox.showerror("Input Error", str(exc))
-            self.status_var.set(f"Error: {exc}")
+            self.status_var.set(f"Error: {exc}")    # Also update the status line in the GUI
             
         except Exception as exc:
             messagebox.showerror("Unexpected Error", str(exc))
