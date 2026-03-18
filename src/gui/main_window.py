@@ -66,12 +66,18 @@ class RecordManagementApp(ClientFormMixin, AirlineFormMixin, FlightFormMixin):
         button_frame = ttk.Frame(self.root, padding=10)
         button_frame.pack(fill="x")
 
-        ttk.Button(button_frame, text="Execute", command=self.handle_action).pack(side="left", padx=5)
+        self.action_button = ttk.Button(button_frame, text="Execute", command=self.handle_action)
+        self.action_button.pack(side="left", padx=5)    
         ttk.Button(button_frame, text="Clear Fields", command=self.clear_form).pack(side="left", padx=5)
-        ttk.Button(button_frame, text="Show All Flights", command=self.show_all_flights).pack(side="left", padx=5)
+        self.show_flights_button = ttk.Button(button_frame, text="Show All Flights", command=self.show_all_flights)
+        self.show_flights_button.pack(side="left", padx=5)
 
         self.output_frame = ttk.LabelFrame(self.root, text="Results", padding=10)
         self.output_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        self.status_var = tk.StringVar(value="Ready")
+        
+        status_label = ttk.Label(self.root, textvariable=self.status_var)
+        status_label.pack(fill="x", padx=10, pady=(0, 10))
 
         self.output_text = tk.Text(self.output_frame, wrap="word", height=20)
         self.output_text.pack(fill="both", expand=True)
@@ -86,7 +92,10 @@ class RecordManagementApp(ClientFormMixin, AirlineFormMixin, FlightFormMixin):
             self.record_type_var.get(),
             self.action_var.get(),
         )
-
+        task_name = f"{self.action_var.get().title()} {self.record_type_var.get().title()}"
+        self.form_frame.config(text=f"{task_name} Form")
+        self.action_button.config(text=task_name)
+        
         for row, field in enumerate(fields):
             ttk.Label(self.form_frame, text=f"{field}:").grid(
                 row=row, column=0, padx=5, pady=5, sticky="w"
@@ -95,12 +104,26 @@ class RecordManagementApp(ClientFormMixin, AirlineFormMixin, FlightFormMixin):
             entry.grid(row=row, column=1, padx=5, pady=5, sticky="w")
             self.entries[field] = entry
 
+        required_fields = {
+        "client": {"ID", "Name", "Phone Number"},
+        "airline": {"ID", "Airline Name"},
+        "flight": {"Client_ID", "Airline_ID", "Date", "Start City", "End City"},
+            }
+        
         if self.record_type_var.get() == "flight":
-            ttk.Label(
-                self.form_frame,
-                text="Date format: YYYY-MM-DD HH:MM",
-            ).grid(row=len(fields), column=0, columnspan=2, padx=5, pady=5, sticky="w")
+            label_text = field
+        if field in required_fields.get(self.record_type_var.get(), set()):
+            label_text = f"{field} *"
+        
+        ttk.Label(self.form_frame, text=f"{label_text}:").grid(
+            row=row, column=0, padx=5, pady=5, sticky="w"
+)
 
+        if self.record_type_var.get() == "flight":
+            self.show_flights_button.config(state="normal")
+        else:
+            self.show_flights_button.config(state="disabled")
+            
     def get_fields_for_view(self, record_type: str, action: str) -> list[str]:
         if record_type == "client":
             return self.get_client_fields(action)
@@ -130,15 +153,33 @@ class RecordManagementApp(ClientFormMixin, AirlineFormMixin, FlightFormMixin):
 
         if result is None:
             self.output_text.insert(tk.END, "No matching record found.")
+            self.status_var.set("No matching record found.")
             return
 
         if result == []:
             self.output_text.insert(tk.END, "No matching records found.")
+            self.status_var.set("No matching records found.")
             return
 
         if isinstance(result, list):
-            for item in result:
-                self.output_text.insert(tk.END, f"{item}\n\n")
+            self.output_text.insert(tk.END, f"Found {len(result)} record(s).\n\n")
+            for index, item in enumerate(result, start=1):
+                self.output_text.insert(tk.END, f"Record {index}\n")
+                self.output_text.insert(tk.END, "-" * 40 + "\n")
+                if isinstance(item, dict):
+                    for key, value in item.items():
+                        self.output_text.insert(tk.END, f"{key}: {value}\n")
+                else:
+                    self.output_text.insert(tk.END, f"{item}\n")
+                self.output_text.insert(tk.END, "\n")
+            self.status_var.set(f"Found {len(result)} record(s).")
             return
 
-        self.output_text.insert(tk.END, f"{result}")
+        if isinstance(result, dict):
+            for key, value in result.items():
+                self.output_text.insert(tk.END, f"{key}: {value}\n")
+            self.status_var.set("Action completed successfully.")
+            return
+
+        self.output_text.insert(tk.END, str(result))
+        self.status_var.set("Action completed.")
