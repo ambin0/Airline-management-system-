@@ -184,26 +184,32 @@ class TestFlightCrud(unittest.TestCase):
 
     def test_update_flight_raises_error_if_not_unique(self):
         create_flight(self.records, self.flight_1)
-        create_flight(self.records, {
-            "Client_ID": 1,
-            "Airline_ID": 12,
-            "Date": "2026-03-25 15:00",
-            "Start City": "Dubai",
-            "End City": "Rome",
-        })
+        create_flight(
+            self.records,
+            {
+                "Client_ID": 1,
+                "Airline_ID": 12,
+                "Date": "2026-03-25 15:00",
+                "Start City": "Dubai",
+                "End City": "Rome",
+            },
+        )
 
         with self.assertRaises(ValueError):
             update_flight(self.records, {"Client_ID": 1}, {"End City": "Milan"})
 
     def test_update_flight_rejects_duplicate_result(self):
         create_flight(self.records, self.flight_1)
-        create_flight(self.records, {
-            "Client_ID": 1,
-            "Airline_ID": 10,
-            "Date": "2026-03-21 10:00",
-            "Start City": "Dubai",
-            "End City": "Manchester",
-        })
+        create_flight(
+            self.records,
+            {
+                "Client_ID": 1,
+                "Airline_ID": 10,
+                "Date": "2026-03-21 10:00",
+                "Start City": "Dubai",
+                "End City": "Manchester",
+            },
+        )
 
         with self.assertRaises(ValueError):
             update_flight(
@@ -234,16 +240,62 @@ class TestFlightCrud(unittest.TestCase):
 
     def test_delete_flight_raises_error_if_not_unique(self):
         create_flight(self.records, self.flight_1)
-        create_flight(self.records, {
-            "Client_ID": 1,
-            "Airline_ID": 12,
-            "Date": "2026-03-25 15:00",
-            "Start City": "Dubai",
-            "End City": "Rome",
-        })
+        create_flight(
+            self.records,
+            {
+                "Client_ID": 1,
+                "Airline_ID": 12,
+                "Date": "2026-03-25 15:00",
+                "Start City": "Dubai",
+                "End City": "Rome",
+            },
+        )
 
         with self.assertRaises(ValueError):
             delete_flight(self.records, {"Client_ID": 1})
+
+    def test_search_flights_accepts_string_client_id(self):
+        """Search should work even if Client_ID is given as a string."""
+        create_flight(self.records, self.flight_1)
+
+        results = search_flights(self.records, {"Client_ID": "1"})
+
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["End City"], "London")
+
+    def test_search_flights_returns_empty_when_no_match(self):
+        """Searching with criteria that match nothing should return an empty list."""
+        create_flight(self.records, self.flight_1)
+
+        results = search_flights(self.records, {"Start City": "Tokyo"})
+
+        self.assertEqual(results, [])
+
+    def test_update_flight_changes_date(self):
+        """Updating the flight date should work if the new date is valid."""
+        create_flight(self.records, self.flight_1)
+
+        updated = update_flight(
+            self.records,
+            build_flight_key(self.flight_1),
+            {"Date": "2026-03-22 15:00"},
+        )
+
+        self.assertIsNotNone(updated)
+        self.assertEqual(updated["Date"], "2026-03-22 15:00")
+
+    def test_search_flights_multiple_criteria(self):
+        """Search using multiple criteria should return the correct flight."""
+        create_flight(self.records, self.flight_1)
+        create_flight(self.records, self.flight_2)
+
+        results = search_flights(
+            self.records,
+            {"Client_ID": 1, "Start City": "Dubai"},
+        )
+
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["End City"], "London")
 
 
 if __name__ == "__main__":
