@@ -1,4 +1,6 @@
 import tkinter as tk
+import re
+from tkinter import messagebox
 from tkinter import messagebox
 
 from record.client_crud import (
@@ -11,6 +13,19 @@ from record.client_crud import (
 
 
 class ClientFormMixin:
+
+    def validate_client_data(self, data: dict) -> None:
+        if not str(data["ID"]).isdigit():
+            raise ValueError("Client ID must be a number.")
+        if not data["Name"].strip():
+            raise ValueError("Name is required.")
+        if not data["Phone Number"].strip():
+            raise ValueError("Phone Number is required.")
+        if not re.fullmatch(r"[0-9+\-\s()]+", data["Phone Number"]):
+            raise ValueError("Phone Number contains invalid characters.")
+        if data["Zip Code"] and len(data["Zip Code"].strip()) < 3:
+            raise ValueError("ZIP Code looks too short.")
+        
     def get_client_fields(self, action: str) -> list[str]:
         if action == "create":
             return [
@@ -57,9 +72,10 @@ class ClientFormMixin:
                     "Country": self.entries["Country"].get(),
                     "Phone Number": self.entries["Phone Number"].get(),
                 }
+                self.validate_client_data(data)
                 result = create_client(self.records, data)
                 self.display_result(result)
-
+                
             elif action == "search":
                 value = self.entries["ID or Name"].get().strip()
                 if value.isdigit():
@@ -71,6 +87,7 @@ class ClientFormMixin:
             elif action == "update":
                 client_id = int(self.entries["ID"].get())
                 updates = {
+                    "ID": client_id,
                     "Name": self.entries["Name"].get(),
                     "Address Line 1": self.entries["Address Line 1"].get(),
                     "Address Line 2": self.entries["Address Line 2"].get(),
@@ -81,9 +98,24 @@ class ClientFormMixin:
                     "Country": self.entries["Country"].get(),
                     "Phone Number": self.entries["Phone Number"].get(),
                 }
-                result = update_client(self.records, client_id, updates)
+                self.validate_client_data(updates)
+                result = update_client(
+                    self.records,
+                    client_id,
+                    {
+                        "Name": updates["Name"],
+                        "Address Line 1": updates["Address Line 1"],
+                        "Address Line 2": updates["Address Line 2"],
+                        "Address Line 3": updates["Address Line 3"],
+                        "City": updates["City"],
+                        "State": updates["State"],
+                        "Zip Code": updates["Zip Code"],
+                        "Country": updates["Country"],
+                        "Phone Number": updates["Phone Number"],
+                    },
+                )
                 self.display_result(result)
-
+                
             elif action == "delete":
                 value = self.entries["ID or Name"].get().strip()
                 if not value.isdigit():
@@ -93,5 +125,8 @@ class ClientFormMixin:
 
         except ValueError as exc:
             messagebox.showerror("Input Error", str(exc))
+            self.status_var.set(f"Error: {exc}")
+            
         except Exception as exc:
             messagebox.showerror("Unexpected Error", str(exc))
+            self.status_var.set(f"Unexpected error: {exc}")
