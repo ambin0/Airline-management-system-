@@ -60,6 +60,8 @@ And the corresponding test files:
 * `tests/test\_airline\_crud.py`
 * `tests/test\_flight\_crud.py`
 
+My Contribution (Brentin Govender)
+
 As member 4, Implemented validation support for flight records by adding src/record/validation.py, updating src/record/flight_crud.py, and adding/extending tests in tests/test_validation.py and tests/test_flight_crud.py. The updated logic validates required fields, enforces the agreed date format, checks that referenced client and airline records exist, and prevents duplicate flight records based on the agreed composite flight key.
 
 ### A Few Notes for the Team
